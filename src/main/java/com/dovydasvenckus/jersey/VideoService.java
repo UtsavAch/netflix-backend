@@ -11,7 +11,7 @@ public class VideoService {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Video(rs.getInt("id"), rs.getString("title"), rs.getString("file_path"));
+                return new Video(rs.getInt("id"), rs.getString("name"), rs.getString("link_360p"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

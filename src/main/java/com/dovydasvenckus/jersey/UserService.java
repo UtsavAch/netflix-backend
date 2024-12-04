@@ -11,7 +11,7 @@ public class UserService {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"));
+                return new User(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
