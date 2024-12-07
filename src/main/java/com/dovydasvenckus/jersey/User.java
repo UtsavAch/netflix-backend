@@ -8,16 +8,19 @@ public class User {
     private String email;          // Not null, unique
     private String password;       // Not null
     private String role;           // Can be null, default is "user"
-    private LocalDateTime created_at; // When the user was created (current timestamp)
+    final private LocalDateTime created_at; // When the user was created (current timestamp)
+
+    private int login_status; // When the user is logged in
 
     // Constructor
-    public User(int id, String name, String email, String password, String role, LocalDateTime created_at) {
+    public User(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = role != null ? role : "user"; // Default to "user" if null
-        this.created_at = created_at;
+        this.role = "user"; // Default to "user", can be changed to "admin"
+        this.created_at = LocalDateTime.now();
+        this.login_status = 0;
     }
 
     // Getter methods
@@ -45,6 +48,10 @@ public class User {
         return created_at;
     }
 
+    public int getLoginStatus() {
+        return login_status;
+    }
+
     // Setter methods
     public void setName(String name) {
         this.name = name;
@@ -62,7 +69,7 @@ public class User {
         this.role = role != null ? role : "user"; // Default to "user" if null
     }
 
-    public void setCreatedAt(LocalDateTime created_at) {
-        this.created_at = created_at;
+    public void setLoginStatus(int login_status) {
+        this.login_status = login_status;
     }
 }

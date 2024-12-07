@@ -1,7 +1,5 @@
 package com.dovydasvenckus.jersey;
 
-import java.time.LocalDateTime;
-
 public class Main {
     public static void main(String[] args) {
         ////////////////////////////////////////////////
@@ -73,15 +71,14 @@ public class Main {
 
         //Add new user to the database
         //UNCOMMENT TO USE IT
+
+        // Add new user to the database
         /**
         User newUser = new User(
-                0, // ID will be auto-generated
+                0,
                 "Joe Toe",
                 "joe.toe@example.com",
-                "joe123", // Password should be hashed in production later
-                "user",
-                LocalDateTime.now()
-        );
+                "joe123");
 
         boolean isAdded = userService.addUser(newUser);
         if (isAdded) {
