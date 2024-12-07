@@ -1,4 +1,7 @@
-package com.dovydasvenckus.jersey;
+package com.dovydasvenckus.jersey.resources;
+
+import com.dovydasvenckus.jersey.User;
+import com.dovydasvenckus.jersey.UserService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
