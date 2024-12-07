@@ -6,8 +6,8 @@ import java.time.LocalDateTime;
 public class VideoService {
 
     //Get video from the database by its ID
+    /**To get video from the database by its ID*/
     public Video getVideoById(int id) {
-        /**To get video from the database by its ID*/
         String query = "SELECT * FROM movies WHERE id = ?";
         try (Connection conn = DatabaseConfig.getConnection(); // Get connection from DatabaseConfig
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -35,8 +35,8 @@ public class VideoService {
     }
 
     // Add a new video to the database
+    /**To add a new video in the database*/
     public boolean addVideo(Video video) {
-        /**To add a new video in the database*/
         String insertQuery = "INSERT INTO movies (name, genre, duration, link_360p, link_1080p, created_at) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConfig.getConnection();
