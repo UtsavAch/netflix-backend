@@ -4,16 +4,53 @@ import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
+        ////////////////////////////////////////////////
+        ////////////////////////////////////////////////
+        /// Check for Video Queries ///
         VideoService videoService = new VideoService();
-        Video video = videoService.getVideoById(1);
+
+        // Retrieve a video by its ID
+        //UNCOMMENT TO USE IT
+        /**
+        Video video = videoService.getVideoById(3);
+
+        // Check if the video exists and print its details
         if (video != null) {
             System.out.println("Video ID: " + video.getId());
             System.out.println("Name: " + video.getName());
-            System.out.println("File Path: " + video.getFilePath());
+            System.out.println("Genre: " + video.getGenre());
+            System.out.println("Duration: " + video.getDuration() + " minutes");
+            System.out.println("Link (360p): " + video.getLink360p());
+            System.out.println("Link (1080p): " + video.getLink1080p());
+            System.out.println("Uploaded At: " + video.getCreatedAt());
         } else {
             System.out.println("Video not found!");
         }
+        */
 
+        //Add new user to the database
+        //UNCOMMENT TO USE IT
+        /**
+        Video newVideo = new Video(
+                0, // ID will auto-increment in database
+                "Tom and Jerry",
+                "Animation",
+                111, // Duration in minutes
+                "link_to_360p.com",
+                "link_to_1080p.com",
+                LocalDateTime.now()
+        );
+        // Attempt to insert the video into the database
+        boolean success = videoService.addVideo(newVideo);
+        if (success) {
+            System.out.println("Video added successfully!");
+        } else {
+            System.out.println("Failed to add video.");
+        }
+        */
+
+
+        ////////////////////////////////////////////////
         ////////////////////////////////////////////////
         /// Check for User Queries ///
         UserService userService = new UserService();
