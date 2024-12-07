@@ -2,12 +2,12 @@ package com.dovydasvenckus.jersey;
 
 public class Video {
     private int id;
-    private String title;
+    private String name;
     private String filePath;
 
-    public Video(int id, String title, String filePath) {
+    public Video(int id, String name, String filePath) {
         this.id = id;
-        this.title = title;
+        this.name = name;
         this.filePath = filePath;
     }
 
@@ -15,8 +15,8 @@ public class Video {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public String getFilePath() {
