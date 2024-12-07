@@ -19,7 +19,7 @@ public class Main {
         UserService userService = new UserService();
 
         //Get user by ID
-        User user = userService.getUserById(1);
+        User user = userService.getUserById(3);
         if (user != null) {
             System.out.println("User ID: " + user.getId());
             System.out.println("Username: " + user.getName());
@@ -32,12 +32,14 @@ public class Main {
         }
 
         //Add new user to the database
+        //UNCOMMENT TO USE IT
+        /**
         User newUser = new User(
                 0, // ID will be auto-generated
-                "Alice Doe",
-                "alice.doe@example.com",
-                "password123", // Password should be hashed in production later
-                "admin",
+                "Joe Toe",
+                "joe.toe@example.com",
+                "joe123", // Password should be hashed in production later
+                "user",
                 LocalDateTime.now()
         );
 
@@ -47,6 +49,20 @@ public class Main {
         } else {
             System.out.println("Failed to add new user.");
         }
+         */
+
+        //Delete the user from database by ID
+        //The admin can't be deleted by this query
+        //UNCOMMENT TO USE IT //
+        /**
+        int userIdToDelete = 3;
+        boolean isDeleted = userService.deleteUserById(userIdToDelete);
+        if (isDeleted) {
+            System.out.println("User with ID " + userIdToDelete + " was successfully deleted.");
+        } else {
+            System.out.println("Failed to delete user with ID " + userIdToDelete + ".");
+        }
+         */
 
     }
 }
