@@ -35,6 +35,7 @@ public class UserService {
 
     // Add a new user to the database
     public boolean addUser(User user) {
+        /**To add new user to the database*/
         String findVacantIdQuery = "SELECT MIN(t1.id + 1) AS vacant_id " +
                 "FROM users t1 " +
                 "LEFT JOIN users t2 ON t1.id + 1 = t2.id " +
@@ -72,7 +73,8 @@ public class UserService {
 
     // Delete a user from the database by ID, ensuring admins cannot be deleted
     public boolean deleteUserById(int id) {
-        /** To delete the user from the database by ID. This method cannot delete the admins from the database */
+        /** To delete the user from the database by ID. This method cannot delete the admins
+         * from the database. And, only admins can use this query */
         String checkRoleQuery = "SELECT role FROM users WHERE id = ?";
         String deleteQuery = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DatabaseConfig.getConnection();
@@ -102,4 +104,46 @@ public class UserService {
         }
         return false; // Return false if deletion failed
     }
+
+    // Delete a user from the database by email and password
+    public boolean deleteUserByEmailAndPassword(String email, String password) {
+        /** To delete a user from the database using email and password.
+         * This method ensures that the user can only delete their own account.
+         * Admins cannot delete their accounts using this method.
+         */
+        String checkUserQuery = "SELECT role FROM users WHERE email = ? AND password = ?";
+        String deleteQuery = "DELETE FROM users WHERE email = ? AND password = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkUserQuery);
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
+
+            // Check if the user exists and is not an admin
+            checkStmt.setString(1, email);
+            checkStmt.setString(2, password);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next()) {
+                String role = rs.getString("role");
+                if ("admin".equalsIgnoreCase(role)) {
+                    System.out.println("Admins cannot delete their accounts using this method.");
+                    return false;
+                }
+            } else {
+                System.out.println("Invalid email or password.");
+                return false;
+            }
+
+            // Proceed to delete the user
+            deleteStmt.setString(1, email);
+            deleteStmt.setString(2, password);
+            int rowsDeleted = deleteStmt.executeUpdate();
+            return rowsDeleted > 0; // Return true if a user was deleted
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+        return false; // Return false if deletion failed
+    }
+
+
 }

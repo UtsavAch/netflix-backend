@@ -52,6 +52,7 @@ public class Main {
          */
 
         //Delete the user from database by ID
+        //This query is only used by the admin
         //The admin can't be deleted by this query
         //UNCOMMENT TO USE IT //
         /**
@@ -61,6 +62,20 @@ public class Main {
             System.out.println("User with ID " + userIdToDelete + " was successfully deleted.");
         } else {
             System.out.println("Failed to delete user with ID " + userIdToDelete + ".");
+        }
+         */
+
+
+        // Delete a user account by email and password
+        //UNCOMMENT TO USE It//
+        /**
+        String email = "joe.toe@example.com";
+        String password = "joe123";
+        boolean isDeleted = userService.deleteUserByEmailAndPassword(email, password);
+        if (isDeleted) {
+            System.out.println("User account deleted successfully!");
+        } else {
+            System.out.println("Failed to delete user account. Check credentials or role restrictions.");
         }
          */
 
