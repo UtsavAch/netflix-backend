@@ -19,6 +19,8 @@ public class Main {
         UserService userService = new UserService();
 
         //Get user by ID
+        // UNCOMMENT TO USE IT
+        /**
         User user = userService.getUserById(3);
         if (user != null) {
             System.out.println("User ID: " + user.getId());
@@ -30,6 +32,7 @@ public class Main {
         } else {
             System.out.println("User not found!");
         }
+         */
 
         //Add new user to the database
         //UNCOMMENT TO USE IT
@@ -76,6 +79,30 @@ public class Main {
             System.out.println("User account deleted successfully!");
         } else {
             System.out.println("Failed to delete user account. Check credentials or role restrictions.");
+        }
+         */
+
+        // Login to the CMS application as an admin. Other users cannot log in
+        //UNCOMMENT TO USE It//
+        /**
+        boolean canLogin = userService.loginToCMS("alice.doe@example.com", "password123");
+
+        if (canLogin) {
+            System.out.println("Admin successfully logged in.");
+        } else {
+            System.out.println("Login failed.");
+        }
+         */
+
+        // Login to the application(main application). Every valid users cannot log in
+        //UNCOMMENT TO USE It//
+        /**
+        boolean canLogin = userService.login("alta.poe@example.com", "alta123");
+
+        if (canLogin) {
+            System.out.println("User successfully logged in.");
+        } else {
+            System.out.println("Login failed.");
         }
          */
 

@@ -145,5 +145,75 @@ public class UserService {
         return false; // Return false if deletion failed
     }
 
+    // Implement CMS login, where an user can login into the CMS application
+    // The thing is that the user must be admin. Only admins can login to the CMS application
+    public boolean loginToCMS(String email, String password) {
+        /** To allow a user to login to the CMS application.
+         * Only admins are allowed to log in.
+         */
+        String checkAdminQuery = "SELECT role FROM users WHERE email = ? AND password = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(checkAdminQuery)) {
+
+            // Check if the user exists and is an admin
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                String role = rs.getString("role");
+                if ("admin".equalsIgnoreCase(role)) {
+                    System.out.println("Login successful. Welcome to the CMS.");
+                    return true; // Admin can log in
+                } else {
+                    System.out.println("Access denied. Only admins can log in to the CMS.");
+                    return false; // User exists but is not an admin
+                }
+            } else {
+                System.out.println("Invalid email or password.");
+                return false; // No user found with the provided credentials
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if login failed
+    }
+
+    // Implement login for the main application
+    public boolean login(String email, String password) {
+        /** To allow a user to login to the main application.
+         * Any valid user in the database can log in.
+         */
+        String checkUserQuery = "SELECT id, name FROM users WHERE email = ? AND password = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(checkUserQuery)) {
+
+            // Check if the user exists in the database
+            stmt.setString(1, email);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Successful login
+                int userId = rs.getInt("id");
+                String userName = rs.getString("name");
+                System.out.println("Login successful. Welcome, " + userName + " (User ID: " + userId + ").");
+                return true; // User can log in
+            } else {
+                System.out.println("Invalid email or password.");
+                return false; // No user found with the provided credentials
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Return false if login failed
+    }
+
+
+
 
 }
