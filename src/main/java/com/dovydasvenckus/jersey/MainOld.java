@@ -1,5 +1,9 @@
 package com.dovydasvenckus.jersey;
 
+import com.dovydasvenckus.jersey.models.Video;
+import com.dovydasvenckus.jersey.services.UserService;
+import com.dovydasvenckus.jersey.services.VideoService;
+
 import java.util.List;
 
 public class MainOld {
@@ -9,10 +13,28 @@ public class MainOld {
         /// Check for Video Queries ///
         VideoService videoService = new VideoService();
 
+        /**
+        //Get all the videos in the database
+        List<Video> videos = videoService.getAllVideos();
+
+        if (videos.isEmpty()) {
+            System.out.println("No videos found in the database.");
+        } else {
+            System.out.println("Videos in the database:");
+            for (Video video : videos) {
+                System.out.println("ID: " + video.getId() + ", Name: " + video.getName() +
+                        ", Genre: " + video.getGenre() + ", Duration: " + video.getDuration() +
+                        " mins, Link (360p): " + video.getLink360p() +
+                        ", Link (1080p): " + video.getLink1080p());
+            }
+        }
+         */
+
         // Retrieve a video by its ID
         //UNCOMMENT TO USE IT
+
         /**
-        Video video = videoService.getVideoById(3);
+        Video video = videoService.getVideoById(2);
 
         // Check if the video exists and print its details
         if (video != null) {
@@ -22,23 +44,22 @@ public class MainOld {
             System.out.println("Duration: " + video.getDuration() + " minutes");
             System.out.println("Link (360p): " + video.getLink360p());
             System.out.println("Link (1080p): " + video.getLink1080p());
-            System.out.println("Uploaded At: " + video.getCreatedAt());
         } else {
             System.out.println("Video not found!");
         }
-        */
+       */
 
         //Add new user to the database
         //UNCOMMENT TO USE IT
-        /**
+
+        /*
         Video newVideo = new Video(
-                0, // ID will auto-increment in database
+                0,
                 "Tom and Jerry",
                 "Animation",
-                111, // Duration in minutes
+                111,
                 "link_to_360p.com",
-                "link_to_1080p.com",
-                LocalDateTime.now()
+                "link_to_1080p.com"
         );
         // Attempt to insert the video into the database
         boolean success = videoService.addVideo(newVideo);
@@ -47,8 +68,7 @@ public class MainOld {
         } else {
             System.out.println("Failed to add video.");
         }
-        */
-
+*/
 
         ////////////////////////////////////////////////
         ////////////////////////////////////////////////
@@ -57,13 +77,13 @@ public class MainOld {
 
         //Get all users from the database
         // UNCOMMENT TO USE IT
-
+        /**
          List<User> users = userService.getAllUsers();
 
          for (User user : users) {
          System.out.println("ID: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail());
          }
-
+        */
 
         //Get user by ID
         // UNCOMMENT TO USE IT

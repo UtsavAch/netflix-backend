@@ -1,7 +1,7 @@
 package com.dovydasvenckus.jersey.resources;
 
-import com.dovydasvenckus.jersey.User;
-import com.dovydasvenckus.jersey.UserService;
+import com.dovydasvenckus.jersey.models.User;
+import com.dovydasvenckus.jersey.services.UserService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

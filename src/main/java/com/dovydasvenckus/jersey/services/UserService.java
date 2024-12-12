@@ -1,7 +1,9 @@
-package com.dovydasvenckus.jersey;
+package com.dovydasvenckus.jersey.services;
+
+import com.dovydasvenckus.jersey.DatabaseConfig;
+import com.dovydasvenckus.jersey.models.User;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

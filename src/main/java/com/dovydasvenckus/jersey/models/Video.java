@@ -1,4 +1,4 @@
-package com.dovydasvenckus.jersey;
+package com.dovydasvenckus.jersey.models;
 
 import java.time.LocalDateTime;
 
@@ -9,17 +9,15 @@ public class Video {
     private int duration; // Duration in minutes
     private String link360p; // URL for 360p quality video
     private String link1080p; // URL for 1080p quality video
-    private LocalDateTime createdAt; // Timestamp of when the video was uploaded
 
     // Constructor for initializing all fields
-    public Video(int id, String name, String genre, int duration, String link360p, String link1080p, LocalDateTime createdAt) {
+    public Video(int id, String name, String genre, int duration, String link360p, String link1080p) {
         this.id = id;
         this.name = name;
         this.genre = genre;
         this.duration = duration;
         this.link360p = link360p;
         this.link1080p = link1080p;
-        this.createdAt = createdAt;
     }
 
     // Constructor for creating a video without an ID (e.g., when adding a new video to the database)
@@ -29,7 +27,6 @@ public class Video {
         this.duration = duration;
         this.link360p = link360p;
         this.link1080p = link1080p;
-        this.createdAt = createdAt;
     }
 
     // Getters and setters
@@ -75,26 +72,5 @@ public class Video {
 
     public void setLink1080p(String link1080p) {
         this.link1080p = link1080p;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Video{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", genre='" + genre + '\'' +
-                ", duration=" + duration +
-                ", link360p='" + link360p + '\'' +
-                ", link1080p='" + link1080p + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
     }
 }

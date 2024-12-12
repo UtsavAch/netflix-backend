@@ -1,4 +1,4 @@
-package com.dovydasvenckus.jersey;
+package com.dovydasvenckus.jersey.models;
 
 import java.time.LocalDateTime;
 
