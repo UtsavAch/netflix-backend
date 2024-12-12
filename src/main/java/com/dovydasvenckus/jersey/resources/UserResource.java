@@ -6,11 +6,23 @@ import com.dovydasvenckus.jersey.UserService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 @Path("/users")
 public class UserResource {
 
     private final UserService userService = new UserService();
+
+    @GET
+    @Path("/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        if (!users.isEmpty()) {
+            return Response.ok(users).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).entity("No users found").build();
+    }
 
     @GET
     @Path("/{id}")

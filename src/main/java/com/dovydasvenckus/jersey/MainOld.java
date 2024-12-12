@@ -1,5 +1,7 @@
 package com.dovydasvenckus.jersey;
 
+import java.util.List;
+
 public class MainOld {
     public static void main(String[] args) {
         ////////////////////////////////////////////////
@@ -52,6 +54,16 @@ public class MainOld {
         ////////////////////////////////////////////////
         /// Check for User Queries ///
         UserService userService = new UserService();
+
+        //Get all users from the database
+        // UNCOMMENT TO USE IT
+
+         List<User> users = userService.getAllUsers();
+
+         for (User user : users) {
+         System.out.println("ID: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail());
+         }
+
 
         //Get user by ID
         // UNCOMMENT TO USE IT

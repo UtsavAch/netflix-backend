@@ -2,8 +2,36 @@ package com.dovydasvenckus.jersey;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserService {
+
+    /**To get  all users from the database*/
+    public List<User> getAllUsers() {
+        String query = "SELECT * FROM users";
+        List<User> users = new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            // Process the result set
+            while (rs.next()) {
+                User user = new User(
+                        rs.getInt("id"),           // ID
+                        rs.getString("name"),      // Name
+                        rs.getString("email"),     // Email
+                        rs.getString("password")   // Password
+                );
+                users.add(user);
+            }
+            return users;
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+        return null;
+    }
 
     /**To get user from the database by his ID*/
     public User getUserById(int id) {

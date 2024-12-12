@@ -8,8 +8,6 @@ public class User {
     private String email;          // Not null, unique
     private String password;       // Not null
     private String role;           // Can be null, default is "user"
-    //final private LocalDateTime created_at; // When the user was created (current timestamp)
-
     private int login_status; // When the user is logged in
 
     // Constructor
@@ -19,7 +17,6 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = "user"; // Default to "user", can be changed to "admin"
-        //this.created_at = LocalDateTime.now();
         this.login_status = 0;
     }
 
@@ -43,10 +40,6 @@ public class User {
     public String getRole() {
         return role;
     }
-
-    /*public LocalDateTime getCreatedAt() {
-        return created_at;
-    }*/
 
     public int getLoginStatus() {
         return login_status;
