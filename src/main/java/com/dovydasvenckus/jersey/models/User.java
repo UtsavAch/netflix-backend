@@ -11,13 +11,13 @@ public class User {
     private int login_status; // When the user is logged in
 
     // Constructor
-    public User(int id, String name, String email, String password) {
+    public User(int id, String name, String email, String password, String role, int login_status) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.password = password;
-        this.role = "user"; // Default to "user", can be changed to "admin"
-        this.login_status = 0;
+        this.role = role;
+        this.login_status = login_status;
     }
 
     // Getter methods
@@ -37,9 +37,7 @@ public class User {
         return password;
     }
 
-    public String getRole() {
-        return role;
-    }
+    public String getRole(){return role;}
 
     public int getLoginStatus() {
         return login_status;
@@ -59,9 +57,9 @@ public class User {
     }
 
     public void setRole(String role) {
-        this.role = role != null ? role : "user"; // Default to "user" if null
-    }
+        this.role = role;
 
+    }
     public void setLoginStatus(int login_status) {
         this.login_status = login_status;
     }

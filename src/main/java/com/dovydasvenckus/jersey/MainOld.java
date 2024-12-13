@@ -1,5 +1,6 @@
 package com.dovydasvenckus.jersey;
 
+import com.dovydasvenckus.jersey.models.User;
 import com.dovydasvenckus.jersey.models.Video;
 import com.dovydasvenckus.jersey.services.UserService;
 import com.dovydasvenckus.jersey.services.VideoService;
@@ -52,7 +53,7 @@ public class MainOld {
         //Add new user to the database
         //UNCOMMENT TO USE IT
 
-        /*
+        /**
         Video newVideo = new Video(
                 0,
                 "Tom and Jerry",
@@ -105,12 +106,12 @@ public class MainOld {
         //UNCOMMENT TO USE IT
 
         // Add new user to the database
-        /**
+
         User newUser = new User(
                 0,
-                "Joe Toe",
-                "joe.toe@example.com",
-                "joe123");
+                "Jims Boes",
+                "jims.boes@example.com",
+                "jim123", "admin", 1);
 
         boolean isAdded = userService.addUser(newUser);
         if (isAdded) {
@@ -118,7 +119,7 @@ public class MainOld {
         } else {
             System.out.println("Failed to add new user.");
         }
-         */
+
 
         //Delete the user from database by ID
         //This query is only used by the admin

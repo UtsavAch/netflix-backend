@@ -24,7 +24,9 @@ public class UserService {
                         rs.getInt("id"),           // ID
                         rs.getString("name"),      // Name
                         rs.getString("email"),     // Email
-                        rs.getString("password")   // Password
+                        rs.getString("password"),   // Password
+                        rs.getString("role"),       // Role
+                        rs.getInt("login_status")   // Login status
                 );
                 users.add(user);
             }
@@ -52,7 +54,9 @@ public class UserService {
                         rs.getInt("id"),                      // ID
                         rs.getString("name"),                 // Name
                         rs.getString("email"),                // Email
-                        rs.getString("password")             // Password
+                        rs.getString("password"),             // Password
+                        rs.getString("role"),       // Role
+                        rs.getInt("login_status")   // Login status
                 );
             }
         } catch (SQLException e) {
@@ -63,30 +67,19 @@ public class UserService {
 
     // Add a new user to the database
     public boolean addUser(User user) {
-        /** To add a new user to the database */
-        String findVacantIdQuery = "SELECT MIN(t1.id + 1) AS vacant_id " +
-                "FROM users t1 " +
-                "LEFT JOIN users t2 ON t1.id + 1 = t2.id " +
-                "WHERE t2.id IS NULL";
-        String insertUserQuery = "INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)";
+        // Insert query without specifying the ID (assuming the ID is auto-incremented)
+        String insertUserQuery = "INSERT INTO users (id, name, email, password, role, login_status) VALUES (?, ?, ?, ?, ?,?)";
 
         try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement findVacantStmt = conn.prepareStatement(findVacantIdQuery);
              PreparedStatement insertStmt = conn.prepareStatement(insertUserQuery)) {
 
-            // Step 1: Find the first vacant ID
-            int vacantId = -1; // Default value to indicate no vacant ID
-            ResultSet rs = findVacantStmt.executeQuery();
-            if (rs.next()) {
-                vacantId = rs.getInt("vacant_id"); // Get the vacant ID
-            }
-
-            // Step 2: Insert the user
-            int idToUse = (vacantId > 0) ? vacantId : user.getId();
-            insertStmt.setInt(1, idToUse);
+            // Set the parameters for the new user
+            insertStmt.setInt(1, user.getId());
             insertStmt.setString(2, user.getName());
             insertStmt.setString(3, user.getEmail());
             insertStmt.setString(4, user.getPassword());
+            insertStmt.setString(5, user.getRole());
+            insertStmt.setInt(6, user.getLoginStatus());
 
             // Execute the insertion
             int rowsInserted = insertStmt.executeUpdate();
@@ -97,6 +90,7 @@ public class UserService {
         }
         return false; // Return false if insertion failed
     }
+
 
 
 

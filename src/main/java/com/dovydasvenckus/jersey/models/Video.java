@@ -21,7 +21,7 @@ public class Video {
     }
 
     // Constructor for creating a video without an ID (e.g., when adding a new video to the database)
-    public Video(String name, String genre, int duration, String link360p, String link1080p, LocalDateTime createdAt) {
+    public Video(String name, String genre, int duration, String link360p, String link1080p) {
         this.name = name;
         this.genre = genre;
         this.duration = duration;

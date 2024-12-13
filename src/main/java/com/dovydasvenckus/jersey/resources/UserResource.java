@@ -39,11 +39,15 @@ public class UserResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addUser(User user) {
-        boolean added = userService.addUser(user);
-        if (added) {
-            return Response.ok("User added successfully").build();
+        boolean isAdded = userService.addUser(user);
+        if (isAdded) {
+            return Response.status(Response.Status.CREATED)
+                    .entity("User added successfully")
+                    .build();
         }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Failed to add user").build();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Failed to add user")
+                .build();
     }
 
     @DELETE
