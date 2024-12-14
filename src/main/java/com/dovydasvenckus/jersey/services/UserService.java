@@ -111,17 +111,24 @@ public class UserService {
     /** To delete the user from the database by ID. This method cannot delete the admins
      * from the database. And, only admins can use this query */
     public boolean deleteUserById(int id) {
-        String checkRoleQuery = "SELECT role FROM users WHERE id = ?";
+        String checkRoleQuery = "SELECT role, login_status FROM users WHERE id = ?";
         String deleteQuery = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement checkStmt = conn.prepareStatement(checkRoleQuery);
              PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
 
-            // Check the role of the user
+            // Check the role and login status of the user
             checkStmt.setInt(1, id);
             ResultSet rs = checkStmt.executeQuery();
             if (rs.next()) {
                 String role = rs.getString("role");
+                int loginStatus = rs.getInt("login_status");
+
+                if (loginStatus != 1) {
+                    System.out.println("You must be logged in to delete a user.");
+                    return false;
+                }
+
                 if ("admin".equalsIgnoreCase(role)) {
                     System.out.println("Admins cannot be deleted.");
                     return false;
@@ -141,26 +148,34 @@ public class UserService {
         return false; // Return false if deletion failed
     }
 
+
     // Delete a user from the database by email and password
     /** To delete a user from the database using email and password.
      * This method ensures that the user can only delete their own account.
      * Admins cannot delete their accounts using this method.
      */
     public boolean deleteUserByEmailAndPassword(String email, String password) {
-        String checkUserQuery = "SELECT role FROM users WHERE email = ? AND password = ?";
+        String checkUserQuery = "SELECT role, login_status FROM users WHERE email = ? AND password = ?";
         String deleteQuery = "DELETE FROM users WHERE email = ? AND password = ?";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement checkStmt = conn.prepareStatement(checkUserQuery);
              PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
 
-            // Check if the user exists and is not an admin
+            // Check if the user exists and is logged in
             checkStmt.setString(1, email);
             checkStmt.setString(2, password);
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next()) {
                 String role = rs.getString("role");
+                int loginStatus = rs.getInt("login_status");
+
+                if (loginStatus != 1) {
+                    System.out.println("You must be logged in to delete your account.");
+                    return false;
+                }
+
                 if ("admin".equalsIgnoreCase(role)) {
                     System.out.println("Admins cannot delete their accounts using this method.");
                     return false;
@@ -180,6 +195,7 @@ public class UserService {
         }
         return false; // Return false if deletion failed
     }
+
 
     /**
      * Helper method to set login_status to 1 for the user
@@ -290,14 +306,20 @@ public class UserService {
      */
     public boolean updatePassword(String email, String oldPassword, String newPassword) {
         try (Connection connection = DatabaseConfig.getConnection()) {
-            // Verify the user's credentials first
-            String verifyQuery = "SELECT * FROM users WHERE email = ? AND password = ?";
+            // Verify the user's credentials and check login status
+            String verifyQuery = "SELECT login_status FROM users WHERE email = ? AND password = ?";
             try (PreparedStatement verifyStmt = connection.prepareStatement(verifyQuery)) {
                 verifyStmt.setString(1, email);
                 verifyStmt.setString(2, oldPassword);
                 ResultSet resultSet = verifyStmt.executeQuery();
                 if (!resultSet.next()) {
                     return false; // Invalid email or password
+                }
+
+                int loginStatus = resultSet.getInt("login_status");
+                if (loginStatus != 1) {
+                    System.out.println("You must be logged in to change your password.");
+                    return false;
                 }
             }
 

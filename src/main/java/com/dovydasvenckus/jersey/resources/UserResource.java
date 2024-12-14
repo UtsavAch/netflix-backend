@@ -60,6 +60,18 @@ public class UserResource {
         return Response.status(Response.Status.BAD_REQUEST).entity("User not deleted").build();
     }
 
+    @DELETE
+    @Path("/delete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response deleteUserByEmailAndPassword(@QueryParam("email") String email,
+                                                 @QueryParam("password") String password) {
+        boolean deleted = userService.deleteUserByEmailAndPassword(email, password);
+        if (deleted) {
+            return Response.ok("User deleted successfully").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).entity("Invalid email or password, or user not found").build();
+    }
+
     /**
      * Login for CMS application (admin-only)
      */
