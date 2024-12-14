@@ -78,11 +78,11 @@ public class UserResource {
     @POST
     @Path("/cms/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response loginToCMS(@QueryParam("email") String email, @QueryParam("password") String password) {
         User loginSuccess = userService.loginToCMS(email, password);
         if (loginSuccess != null) {
-            return Response.ok("Admin login successful. Welcome to the CMS.").build();
+            return Response.ok(loginSuccess).build();
         }
         return Response.status(Response.Status.FORBIDDEN).entity("Access denied. Invalid credentials or not an admin.").build();
     }
@@ -93,11 +93,11 @@ public class UserResource {
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response login(@QueryParam("email") String email, @QueryParam("password") String password) {
         User loginSuccess = userService.login(email, password);
         if (loginSuccess != null) {
-            return Response.ok("Login successful. Welcome, " + loginSuccess.getName() + " (User ID: " + loginSuccess.getId() + ").").build();
+            return Response.ok(loginSuccess).build();
         }
         return Response.status(Response.Status.FORBIDDEN).entity("Invalid email or password.").build();
     }
