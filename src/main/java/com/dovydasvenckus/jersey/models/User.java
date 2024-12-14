@@ -66,4 +66,15 @@ public class User {
     public void setLoginStatus(int login_status) {
         this.login_status = login_status;
     }
+
+    @Override
+    public String toString() {
+        return "User{id=" + id +
+                ", name='" + name +
+                "', email='" + email +
+                "', password='" + password +
+                "', role='" + role +
+                "', loginStatus=" + login_status +
+                "}";
+    }
 }

@@ -197,16 +197,17 @@ public class MainOld {
 
         // Login to the CMS application as an admin. Other users cannot log in
         //UNCOMMENT TO USE It//
-
         /**
-        User canLogin = userService.loginToCMS("jose.boe@example.com", "jose123");
+        User canLogin = userService.loginToCMS("jims.boe@example.com", "jim123");
 
         if (canLogin != null ) {
             System.out.println("Admin successfully logged in.");
+            System.out.println("Logged in user details: " + canLogin);
         } else {
             System.out.println("Login failed.");
         }
-        */
+         */
+
 
         // Login to the application(main application). Every valid users cannot log in
         //UNCOMMENT TO USE It//
@@ -214,7 +215,8 @@ public class MainOld {
         User canLogin = userService.login("jims.boe@example.com", "jim123");
 
         if (canLogin != null) {
-            System.out.println("User successfully logged in.");
+            System.out.println("Admin successfully logged in.");
+            System.out.println("Logged in user details: " + canLogin);
         } else {
             System.out.println("Login failed.");
         }
@@ -222,7 +224,7 @@ public class MainOld {
 
         // Update the password for a user
         // UNCOMMENT TO USE It
-
+        /**
          String email = "jims.boes@example.com";
          String oldPassword = "jimUp123";
          String newPassword = "jim123";
@@ -233,6 +235,7 @@ public class MainOld {
          } else {
             System.out.println("Failed to update password. Check credentials.");
          }
+         */
 
 
         // User logout if he has logged in
