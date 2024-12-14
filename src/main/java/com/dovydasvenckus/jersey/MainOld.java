@@ -12,7 +12,7 @@ public class MainOld {
         ////////////////////////////////////////////////
         ////////////////////////////////////////////////
         /// Check for Video Queries ///
-        VideoService videoService = new VideoService();
+        //VideoService videoService = new VideoService();
 
         /**
         //Get all the videos in the database

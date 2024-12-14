@@ -6,12 +6,26 @@ import com.dovydasvenckus.jersey.models.Video;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.List;
 
 @Path("/videos")
 public class VideoResource {
 
-    private final VideoService videoService = new VideoService();
+    private VideoService videoService;
+
+    public VideoResource() {
+        try {
+            // Tentando criar o serviço de vídeo, tratando a exceção IOException
+            this.videoService = new VideoService();
+        } catch (IOException e) {
+            // Log ou tratar o erro conforme necessário
+            e.printStackTrace();
+            // Caso não seja possível inicializar o serviço, o recurso pode retornar uma resposta de erro apropriada
+            // Como alternativa, você pode lançar uma RuntimeException para informar que o serviço não está disponível.
+            throw new RuntimeException("Failed to initialize video service", e);
+        }
+    }
 
     @GET
     @Path("/all")
