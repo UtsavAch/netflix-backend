@@ -110,26 +110,38 @@ public class UserService {
     // Delete a user from the database by ID, ensuring admins cannot be deleted
     /** To delete the user from the database by ID. This method cannot delete the admins
      * from the database. And, only admins can use this query */
-    public boolean deleteUserById(int id) {
-        String checkRoleQuery = "SELECT role, login_status FROM users WHERE id = ?";
+    public boolean deleteUserById(int adminId, int id) {
+        String loginStatusQuery = "SELECT role, login_status FROM users WHERE id = ?";
+        String checkRoleQuery = "SELECT role FROM users WHERE id = ?";
         String deleteQuery = "DELETE FROM users WHERE id = ?";
+
         try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement loginStatusStmt = conn.prepareStatement(loginStatusQuery);
              PreparedStatement checkStmt = conn.prepareStatement(checkRoleQuery);
              PreparedStatement deleteStmt = conn.prepareStatement(deleteQuery)) {
 
-            // Check the role and login status of the user
-            checkStmt.setInt(1, id);
-            ResultSet rs = checkStmt.executeQuery();
-            if (rs.next()) {
-                String role = rs.getString("role");
-                int loginStatus = rs.getInt("login_status");
+            // Check if adminId corresponds to a logged-in admin
+            loginStatusStmt.setInt(1, adminId);
+            ResultSet adminRs = loginStatusStmt.executeQuery();
+            if (adminRs.next()) {
+                String role = adminRs.getString("role");
+                boolean loginStatus = adminRs.getBoolean("login_status");
 
-                if (loginStatus != 1) {
-                    System.out.println("You must be logged in to delete a user.");
+                if (!"admin".equalsIgnoreCase(role) || !loginStatus) {
+                    System.out.println("You must be a logged-in admin to delete a user.");
                     return false;
                 }
+            } else {
+                System.out.println("Admin with ID " + adminId + " not found.");
+                return false;
+            }
 
-                if ("admin".equalsIgnoreCase(role)) {
+            // Check the role of the user to be deleted
+            checkStmt.setInt(1, id);
+            ResultSet userRs = checkStmt.executeQuery();
+            if (userRs.next()) {
+                String userRole = userRs.getString("role");
+                if ("admin".equalsIgnoreCase(userRole)) {
                     System.out.println("Admins cannot be deleted.");
                     return false;
                 }
@@ -141,12 +153,20 @@ public class UserService {
             // Proceed to delete the user
             deleteStmt.setInt(1, id);
             int rowsDeleted = deleteStmt.executeUpdate();
-            return rowsDeleted > 0; // Return true if a user was deleted
+            if (rowsDeleted > 0) {
+                System.out.println("User with ID " + id + " deleted successfully.");
+                return true;
+            } else {
+                System.out.println("Failed to delete user with ID " + id + ".");
+                return false;
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false; // Return false if deletion failed
     }
+
 
 
     // Delete a user from the database by email and password

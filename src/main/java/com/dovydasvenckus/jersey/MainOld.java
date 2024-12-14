@@ -172,14 +172,14 @@ public class MainOld {
         //The admin can't be deleted by this query
         //UNCOMMENT TO USE IT //
         /**
-        int userIdToDelete = 3;
-        boolean isDeleted = userService.deleteUserById(userIdToDelete);
+        int userIdToDelete = 6;
+        boolean isDeleted = userService.deleteUserById(3,userIdToDelete);
         if (isDeleted) {
             System.out.println("User with ID " + userIdToDelete + " was successfully deleted.");
         } else {
             System.out.println("Failed to delete user with ID " + userIdToDelete + ".");
         }
-         */
+        */
 
 
         // Delete a user account by email and password

@@ -51,13 +51,16 @@ public class UserResource {
     }
 
     @DELETE
-    @Path("/{id}")
-    public Response deleteUser(@PathParam("id") int id) {
-        boolean deleted = userService.deleteUserById(id);
-        if (deleted) {
-            return Response.ok("User deleted successfully").build();
+    @Path("/{adminId}/delete/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deleteUserById(@PathParam("adminId") int adminId, @PathParam("id") int id) {
+        boolean isDeleted = userService.deleteUserById(adminId, id);
+        if (isDeleted) {
+            return Response.ok("User deleted successfully.").build();
         }
-        return Response.status(Response.Status.BAD_REQUEST).entity("User not deleted").build();
+        return Response.status(Response.Status.FORBIDDEN)
+                .entity("Failed to delete user. Ensure you are an admin with valid credentials and the target is not another admin.")
+                .build();
     }
 
     @DELETE
