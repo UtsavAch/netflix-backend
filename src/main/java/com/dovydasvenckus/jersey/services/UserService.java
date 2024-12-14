@@ -271,6 +271,44 @@ public class UserService {
     }
 
     /**
+     * Updates the password of the logged-in user.
+     * A user can only change their own password.
+     *
+     * @param email       The email of the user requesting the password change.
+     * @param oldPassword The current password of the user.
+     * @param newPassword The new password to be set.
+     * @return true if the password was successfully updated, false otherwise.
+     */
+    public boolean updatePassword(String email, String oldPassword, String newPassword) {
+        try (Connection connection = DatabaseConfig.getConnection()) {
+            // Verify the user's credentials first
+            String verifyQuery = "SELECT * FROM users WHERE email = ? AND password = ?";
+            try (PreparedStatement verifyStmt = connection.prepareStatement(verifyQuery)) {
+                verifyStmt.setString(1, email);
+                verifyStmt.setString(2, oldPassword);
+                ResultSet resultSet = verifyStmt.executeQuery();
+                if (!resultSet.next()) {
+                    return false; // Invalid email or password
+                }
+            }
+
+            // Update the password
+            String updateQuery = "UPDATE users SET password = ? WHERE email = ?";
+            try (PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+                updateStmt.setString(1, newPassword);
+                updateStmt.setString(2, email);
+                int rowsUpdated = updateStmt.executeUpdate();
+                return rowsUpdated > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+    /**
      * Logs out a user by updating their login_status to 0.
      * The user can only log out if they are currently logged in (login_status = 1).
      *

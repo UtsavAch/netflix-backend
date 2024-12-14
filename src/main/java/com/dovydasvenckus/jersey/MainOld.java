@@ -219,6 +219,20 @@ public class MainOld {
         }
          */
 
+        // Update the password for a user
+        // UNCOMMENT TO USE It
+
+         String email = "jims.boes@example.com";
+         String oldPassword = "jim123";
+         String newPassword = "jimUpdated123";
+
+         boolean isUpdated = userService.updatePassword(email, oldPassword, newPassword);
+         if (isUpdated) {
+            System.out.println("Password updated successfully!");
+         } else {
+            System.out.println("Failed to update password. Check credentials.");
+         }
+
         // User logout if he has logged in
         //UNCOMMENT TO USE It
         /**

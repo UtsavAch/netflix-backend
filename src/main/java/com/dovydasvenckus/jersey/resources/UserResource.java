@@ -91,6 +91,27 @@ public class UserResource {
     }
 
     /**
+     * Endpoint for updating the user's password.
+     * A user can only update their own password, and they must be logged in.
+     */
+    @PUT
+    @Path("/update-password")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response updatePassword(@QueryParam("email") String email,
+                                   @QueryParam("oldPassword") String oldPassword,
+                                   @QueryParam("newPassword") String newPassword) {
+        boolean isUpdated = userService.updatePassword(email, oldPassword, newPassword);
+        if (isUpdated) {
+            return Response.ok("Password updated successfully.").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Password update failed. Please check your credentials.")
+                .build();
+    }
+
+
+    /**
      * Logout for the user CMS or main
      */
     /**
