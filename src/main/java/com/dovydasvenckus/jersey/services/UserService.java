@@ -203,8 +203,8 @@ public class UserService {
     /** To allow a user to login to the CMS application.
      * Only admins are allowed to log in.
      */
-    public boolean loginToCMS(String email, String password) {
-        String checkAdminQuery = "SELECT role FROM users WHERE email = ? AND password = ?";
+    public User loginToCMS(String email, String password) {
+        String checkAdminQuery = "SELECT * FROM users WHERE email = ? AND password = ? AND role = 'admin'";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(checkAdminQuery)) {
@@ -214,34 +214,37 @@ public class UserService {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                String role = rs.getString("role");
-                if ("admin".equalsIgnoreCase(role)) {
-                    System.out.println("Login successful. Welcome to the CMS.");
+                User admin = new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getInt("login_status")
+                );
 
-                    // Update login status after successful login
-                    if (updateLoginStatus(email)) {
-                        return true;
-                    } else {
-                        System.out.println("Failed to set login status.");
-                    }
+                // Update login status after successful login
+                if (updateLoginStatus(email)) {
+                    System.out.println("Login successful. Welcome to the CMS.");
+                    return admin;
                 } else {
-                    System.out.println("Access denied. Only admins can log in to the CMS.");
+                    System.out.println("Failed to set login status.");
                 }
             } else {
-                System.out.println("Invalid email or password.");
+                System.out.println("Invalid email, password, or access denied. Only admins can log in to the CMS.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return null; // Return null if login fails
     }
 
     // Implement login for the main application
     /** To allow a user to login to the main application.
      * Any valid user in the database can log in.
      */
-    public boolean login(String email, String password) {
-        String checkUserQuery = "SELECT id, name FROM users WHERE email = ? AND password = ?";
+    public User login(String email, String password) {
+        String checkUserQuery = "SELECT * FROM users WHERE email = ? AND password = ?";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(checkUserQuery)) {
@@ -251,13 +254,19 @@ public class UserService {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                int userId = rs.getInt("id");
-                String userName = rs.getString("name");
-                System.out.println("Login successful. Welcome, " + userName + " (User ID: " + userId + ").");
+                User user = new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getString("role"),
+                        rs.getInt("login_status")
+                );
 
                 // Update login status after successful login
                 if (updateLoginStatus(email)) {
-                    return true;
+                    System.out.println("Login successful. Welcome, " + user.getName() + " (User ID: " + user.getId() + ").");
+                    return user;
                 } else {
                     System.out.println("Failed to set login status.");
                 }
@@ -267,7 +276,7 @@ public class UserService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return null; // Return null if login fails
     }
 
     /**
