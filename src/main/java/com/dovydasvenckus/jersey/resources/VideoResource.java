@@ -37,6 +37,34 @@ public class VideoResource {
         }
     }
 
+    @GET
+    @Path("/name/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVideosByName(@PathParam("name") String name) {
+        List<Video> videos = videoService.getVideosByName(name);
+        if (!videos.isEmpty()) {
+            return Response.ok(videos).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No videos found with the name: " + name)
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/genre/{genre}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getVideosByGenre(@PathParam("genre") String genre) {
+        List<Video> videos = videoService.getVideosByGenre(genre);
+        if (!videos.isEmpty()) {
+            return Response.ok(videos).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("No videos found with the genre: " + genre)
+                    .build();
+        }
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,4 +76,17 @@ public class VideoResource {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error adding video").build();
         }
     }
+
+    @DELETE
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteVideo(@PathParam("id") int id) {
+        boolean success = videoService.deleteVideoById(id);
+        if (success) {
+            return Response.ok().entity("Video with ID " + id + " deleted successfully").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Video not found").build();
+        }
+    }
+
 }

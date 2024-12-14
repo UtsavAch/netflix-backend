@@ -66,15 +66,31 @@ public class UserService {
     }
 
     // Add a new user to the database
+    /** To add the new user to the database */
     public boolean addUser(User user) {
-        // Insert query without specifying the ID (assuming the ID is auto-incremented)
-        String insertUserQuery = "INSERT INTO users (id, name, email, password, role, login_status) VALUES (?, ?, ?, ?, ?,?)";
+        // Query to find the first vacant ID
+        String findVacantIdQuery = "SELECT MIN(t1.id + 1) AS vacant_id " +
+                "FROM users t1 " +
+                "LEFT JOIN users t2 ON t1.id + 1 = t2.id " +
+                "WHERE t2.id IS NULL";
+
+        // Insert query
+        String insertUserQuery = "INSERT INTO users (id, name, email, password, role, login_status) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement findVacantStmt = conn.prepareStatement(findVacantIdQuery);
              PreparedStatement insertStmt = conn.prepareStatement(insertUserQuery)) {
 
-            // Set the parameters for the new user
-            insertStmt.setInt(1, user.getId());
+            // Step 1: Find the first vacant ID
+            int vacantId = -1; // Default value to indicate no vacant ID
+            ResultSet rs = findVacantStmt.executeQuery();
+            if (rs.next()) {
+                vacantId = rs.getInt("vacant_id"); // Get the vacant ID
+            }
+
+            // Step 2: Insert the user
+            int idToUse = (vacantId > 0) ? vacantId : user.getId();
+            insertStmt.setInt(1, idToUse);
             insertStmt.setString(2, user.getName());
             insertStmt.setString(3, user.getEmail());
             insertStmt.setString(4, user.getPassword());
@@ -90,9 +106,6 @@ public class UserService {
         }
         return false; // Return false if insertion failed
     }
-
-
-
 
     // Delete a user from the database by ID, ensuring admins cannot be deleted
     /** To delete the user from the database by ID. This method cannot delete the admins
@@ -255,6 +268,53 @@ public class UserService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    /**
+     * Logs out a user by updating their login_status to 0.
+     * The user can only log out if they are currently logged in (login_status = 1).
+     *
+     * @param email The email of the user who wants to log out.
+     * @return true if the logout was successful, false otherwise.
+     */
+    public boolean logout(String email) {
+        String checkStatusQuery = "SELECT login_status FROM users WHERE email = ?";
+        String updateQuery = "UPDATE users SET login_status = 0 WHERE email = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement checkStmt = conn.prepareStatement(checkStatusQuery);
+             PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+
+            // Step 1: Check the current login status
+            checkStmt.setString(1, email);
+            ResultSet rs = checkStmt.executeQuery();
+
+            if (rs.next()) {
+                int loginStatus = rs.getInt("login_status");
+                if (loginStatus == 1) {
+                    // User is logged in, proceed with logout
+                    updateStmt.setString(1, email);
+                    int rowsAffected = updateStmt.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        System.out.println("Logout successful for user with email: " + email);
+                        return true;
+                    } else {
+                        System.out.println("Failed to update login status for user with email: " + email);
+                    }
+                } else {
+                    // User is not logged in
+                    System.out.println("Logout failed: User with email " + email + " is not logged in.");
+                }
+            } else {
+                // No user found with the given email
+                System.out.println("Logout failed: No user found with email " + email + ".");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+
+        return false; // Return false if logout failed
     }
 
 }

@@ -89,4 +89,25 @@ public class UserResource {
         }
         return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid email or password.").build();
     }
+
+    /**
+     * Logout for the user CMS or main
+     */
+    /**
+     * Logout for the user (CMS or main application)
+     */
+    @POST
+    @Path("/logout")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response logout(@QueryParam("email") String email) {
+        boolean logoutSuccess = userService.logout(email);
+        if (logoutSuccess) {
+            return Response.ok("Logout successful. See you next time!").build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Logout failed. User might not be logged in or does not exist.")
+                .build();
+    }
+
 }

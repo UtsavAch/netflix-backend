@@ -67,13 +67,75 @@ public class VideoService {
         return null; // Return null if no video is found or an error occurs
     }
 
+    /**
+     * To get all videos from the database by their name.
+     */
+    public List<Video> getVideosByName(String name) {
+        String query = "SELECT * FROM movies WHERE name = ?";
+        List<Video> videos = new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, name); // Set the video name in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Loop through the result set and add each matching video to the list
+            while (rs.next()) {
+                videos.add(new Video(
+                        rs.getInt("id"),                // ID
+                        rs.getString("name"),           // Name
+                        rs.getString("genre"),          // Genre
+                        rs.getInt("duration"),          // Duration in minutes
+                        rs.getString("link_360p"),      // Link to 360p video
+                        rs.getString("link_1080p")      // Link to 1080p video
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+
+        return videos; // Return the list of videos (empty if no matches found)
+    }
+
+    /**
+     * To get all videos from the database by their genre.
+     */
+    public List<Video> getVideosByGenre(String genre) {
+        String query = "SELECT * FROM movies WHERE genre = ?";
+        List<Video> videos = new ArrayList<>();
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, genre); // Set the genre in the query
+            ResultSet rs = stmt.executeQuery();
+
+            // Loop through the result set and add each matching video to the list
+            while (rs.next()) {
+                videos.add(new Video(
+                        rs.getInt("id"),                // ID
+                        rs.getString("name"),           // Name
+                        rs.getString("genre"),          // Genre
+                        rs.getInt("duration"),          // Duration in minutes
+                        rs.getString("link_360p"),      // Link to 360p video
+                        rs.getString("link_1080p")      // Link to 1080p video
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+
+        return videos; // Return the list of videos (empty if no matches found)
+    }
+
     // Add a new video to the database
 
     /**
      * To add a new video in the database
      */
+
     public boolean addVideo(Video video) {
-        /** To add a new video to the database */
         String findVacantIdQuery = "SELECT MIN(t1.id + 1) AS vacant_id " +
                 "FROM movies t1 " +
                 "LEFT JOIN movies t2 ON t1.id + 1 = t2.id " +
@@ -109,4 +171,27 @@ public class VideoService {
         }
         return false; // Return false if insertion failed
     }
+
+    /**
+     * Delete a video from the database by its ID.
+     */
+    public boolean deleteVideoById(int id) {
+        String deleteQuery = "DELETE FROM movies WHERE id = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection(); // Get database connection
+             PreparedStatement stmt = conn.prepareStatement(deleteQuery)) {
+
+            stmt.setInt(1, id); // Set the video ID in the query
+
+            int rowsDeleted = stmt.executeUpdate(); // Execute the deletion
+            return rowsDeleted > 0; // Return true if a row was deleted
+        } catch (SQLException e) {
+            // Log the exception
+            e.printStackTrace();
+        }
+
+        return false; // Return false if deletion failed
+    }
+
+
 }

@@ -50,13 +50,45 @@ public class MainOld {
         }
        */
 
+        //Get all the videos with the same name
+        //UNCOMMENT TO USE IT
+        /**
+        List<Video> videos = videoService.getVideosByName("Tom and Jerry");
+
+        if (!videos.isEmpty()) {
+            System.out.println("Videos found with name 'Inception':");
+            for (Video video : videos) {
+                System.out.println(video.getName() + " - Genre: " + video.getGenre() + " - Duration: " + video.getDuration());
+            }
+        } else {
+            System.out.println("No videos found with the name 'Inception'.");
+        }
+         */
+
+        //Get all the videos with the same genre
+        //UNCOMMENT TO USE IT
+        /**
+        List<Video> videosByGenre = videoService.getVideosByGenre("Animation");
+
+        if (!videosByGenre.isEmpty()) {
+            for (Video video : videosByGenre) {
+                System.out.println("ID: " + video.getId() + ", Name: " + video.getName() +
+                        ", Genre: " + video.getGenre() + ", Duration: " + video.getDuration() +
+                        " mins, Link (360p): " + video.getLink360p() +
+                        ", Link (1080p): " + video.getLink1080p());
+            }
+        } else {
+            System.out.println("No videos found with this genre.");
+        }
+         */
+
+
         //Add new user to the database
         //UNCOMMENT TO USE IT
-
         /**
         Video newVideo = new Video(
                 0,
-                "Tom and Jerry",
+                "Humpty Dumpty",
                 "Animation",
                 111,
                 "link_to_360p.com",
@@ -69,7 +101,20 @@ public class MainOld {
         } else {
             System.out.println("Failed to add video.");
         }
-*/
+        */
+
+        //Delete a video by id from the database
+        //UNCOMMENT TO USE IT
+        /**
+        int videoIdToDelete = 3;
+        boolean isDeleted = videoService.deleteVideoById(videoIdToDelete);
+
+        if (isDeleted) {
+            System.out.println("Video with ID " + videoIdToDelete + " was successfully deleted.");
+        } else {
+            System.out.println("Failed to delete video with ID " + videoIdToDelete + ". It may not exist.");
+        }
+         */
 
         ////////////////////////////////////////////////
         ////////////////////////////////////////////////
@@ -105,13 +150,12 @@ public class MainOld {
         //Add new user to the database
         //UNCOMMENT TO USE IT
 
-        // Add new user to the database
-
+        /**
         User newUser = new User(
                 0,
-                "Jims Boes",
-                "jims.boes@example.com",
-                "jim123", "admin", 1);
+                "Jimmy Joe",
+                "jimmmy.boes@example.com",
+                "jimmy23", "admin", 0);
 
         boolean isAdded = userService.addUser(newUser);
         if (isAdded) {
@@ -119,6 +163,8 @@ public class MainOld {
         } else {
             System.out.println("Failed to add new user.");
         }
+         */
+
 
 
         //Delete the user from database by ID
@@ -172,6 +218,18 @@ public class MainOld {
             System.out.println("Login failed.");
         }
          */
+
+        // User logout if he has logged in
+        //UNCOMMENT TO USE It
+        /**
+        String userEmail = "jimmmy.boes@example.com"; // Replace with the actual user's email
+
+        if (userService.logout(userEmail)) {
+            System.out.println("User logged out successfully.");
+        } else {
+            System.out.println("Logout failed. The user might not be logged in or the email is incorrect.");
+        }
+        */
 
     }
 }
