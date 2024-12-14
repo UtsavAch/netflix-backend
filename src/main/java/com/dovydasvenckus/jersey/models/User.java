@@ -10,6 +10,9 @@ public class User {
     private String role;           // Can be null, default is "user"
     private int login_status; // When the user is logged in
 
+    // constructor for json deserialization
+    public User() {}
+
     // Constructor
     public User(int id, String name, String email, String password, String role, int login_status) {
         this.id = id;
