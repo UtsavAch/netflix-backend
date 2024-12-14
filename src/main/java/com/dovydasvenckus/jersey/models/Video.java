@@ -10,6 +10,8 @@ public class Video {
     private String link360p; // URL for 360p quality video
     private String link1080p; // URL for 1080p quality video
 
+    public Video(){}
+
     // Constructor for initializing all fields
     public Video(int id, String name, String genre, int duration, String link360p, String link1080p) {
         this.id = id;
