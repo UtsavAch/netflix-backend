@@ -1,42 +1,58 @@
 package com.dovydasvenckus.jersey;
 
+import com.google.api.gax.paging.Page;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.storage.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class GoogleCloudStorageService {
     private final Storage storage;
 
-    public GoogleCloudStorageService(String jsonCredentials) throws IOException, IOException {
-        // Carregar as credenciais diretamente a partir de uma string JSON
+    public GoogleCloudStorageService(String jsonCredentials) throws IOException {
+        // Load credentials from JSON string
         GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(jsonCredentials.getBytes()));
 
-        // Configurar o serviço de Storage com as credenciais
+        // Configure the storage service with credentials
         this.storage = StorageOptions.newBuilder()
                 .setCredentials(credentials)
-                .setProjectId("your-project-id")  // Certifique-se de substituir pelo seu ID do projeto
+                .setProjectId("bucket-movies-project")
                 .build()
                 .getService();
     }
 
-    /**
-     * Generates a signed URL for the given file path in the specified bucket.
-     *
-     * @param bucketName Name of the bucket
-     * @param filePath   Path of the file in the bucket
-     * @return Signed URL as a string
-     */
+    // Generate a signed URL for a specific file in the bucket
     public String generateSignedUrl(String bucketName, String filePath) {
         BlobId blobId = BlobId.of(bucketName, filePath);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
-
-        // Generate a signed URL valid for 15 minutes
         URL signedUrl = storage.signUrl(blobInfo, 15, TimeUnit.MINUTES, Storage.SignUrlOption.withV4Signature());
         return signedUrl.toString();
+    }
+
+    // Retrieve the content of a file from the bucket
+    public String getFileContent(String bucketName, String filePath) throws IOException {
+        BlobId blobId = BlobId.of(bucketName, filePath);
+        return new String(storage.readAllBytes(blobId));
+    }
+
+    public void uploadFile(String bucketName, String filePath, String content) throws IOException {
+        // Convert the content string to a byte array
+        byte[] contentBytes = content.getBytes("UTF-8");
+
+        // Create a BlobInfo object with the bucket name and file path
+        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, filePath).build();
+
+        // Upload the content to Cloud Storage
+        Blob blob = storage.create(blobInfo, contentBytes);
+
+        // Optionally, print the URL to the uploaded file
+        System.out.println("File uploaded to: " + blob.getSelfLink());
     }
 }
 

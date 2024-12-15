@@ -13,7 +13,7 @@ public class UserService {
     public List<User> getAllUsers() {
         String query = "SELECT * FROM users";
         List<User> users = new ArrayList<>();
-
+        System.out.println("get all users");
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -39,7 +39,7 @@ public class UserService {
 
     /**To get user from the database by his ID*/
     public User getUserById(int id) {
-
+        System.out.println("get a user");
         String query = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {

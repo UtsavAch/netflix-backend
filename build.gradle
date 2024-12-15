@@ -39,7 +39,5 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.4' // MariaDB JDBC driver
     implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.15.2'
 
-    implementation 'com.google.firebase:firebase-admin:9.0.0'
-
     implementation 'com.google.cloud:google-cloud-storage:2.27.0'
 }

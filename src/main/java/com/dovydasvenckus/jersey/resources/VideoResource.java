@@ -16,16 +16,31 @@ public class VideoResource {
 
     public VideoResource() {
         try {
-            // Tentando criar o serviço de vídeo, tratando a exceção IOException
+            System.out.println("try initialize video service");
             this.videoService = new VideoService();
         } catch (IOException e) {
-            // Log ou tratar o erro conforme necessário
+            System.out.println("error initialize video service");
             e.printStackTrace();
-            // Caso não seja possível inicializar o serviço, o recurso pode retornar uma resposta de erro apropriada
-            // Como alternativa, você pode lançar uma RuntimeException para informar que o serviço não está disponível.
             throw new RuntimeException("Failed to initialize video service", e);
         }
     }
+
+
+    @GET
+    @Path("/{id}/master")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response getSignedMasterUrl(@PathParam("id") int videoId) {
+        try {
+            // Get the M3U8 playlist with signed URLs
+            String signedMasterUrl = videoService.getSignedMasterUrl(videoId);
+            return Response.ok(signedMasterUrl).build();
+        } catch (RuntimeException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+    }
+
+
+
 
     @GET
     @Path("/all")

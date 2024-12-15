@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VideoService {
 
@@ -31,9 +32,98 @@ public class VideoService {
             "}\n";
 
     public VideoService() throws IOException {
-        // Passando o JSON das credenciais diretamente para o serviço
+        System.out.println("initialize video service");
         this.storageService = new GoogleCloudStorageService(jsonCredentials);
     }
+
+
+    public String getOriginalM3U8Playlist(String bucketName, String m3u8FilePath) throws IOException {
+        return storageService.getFileContent(bucketName, m3u8FilePath);
+    }
+
+
+    public String modifyM3U8PlaylistWithSignedUrls(String bucketName, String m3u8FilePath) throws IOException {
+        // Fetch the original M3U8 playlist
+        String m3u8Playlist = getOriginalM3U8Playlist(bucketName, m3u8FilePath);
+
+        // Extract .ts file paths from the playlist
+        List<String> tsFilePaths = extractTsFilePathsFromPlaylist(m3u8Playlist);
+
+        // Generate signed URLs for each .ts file
+        List<String> signedUrls = new ArrayList<>();
+        String pathPrefix = m3u8FilePath.replace("stream_1.m3u8", ""); // dealing with this only, change later
+        for (String tsFilePath : tsFilePaths) {
+            String signedUrl = storageService.generateSignedUrl(bucketName, pathPrefix + tsFilePath);
+            signedUrls.add(signedUrl);
+        }
+
+        // Replace .ts file paths in the playlist with the signed URLs
+        return replaceTsFilePathsWithSignedUrls(m3u8Playlist, tsFilePaths, signedUrls);
+    }
+
+    public void uploadModifiedPlaylistToCloud(String bucketName, String modifiedPlaylist, String m3u8FilePath) throws IOException {
+        // Upload the modified playlist to Cloud Storage
+        storageService.uploadFile(bucketName, m3u8FilePath, modifiedPlaylist);
+    }
+
+    public String generateSignedUrlForModifiedPlaylist(String bucketName, String m3u8FilePath) throws IOException {
+        return storageService.generateSignedUrl(bucketName, m3u8FilePath);
+    }
+
+
+
+    private List<String> extractTsFilePathsFromPlaylist(String m3u8Playlist) {
+        List<String> tsFilePaths = new ArrayList<>();
+        String[] lines = m3u8Playlist.split("\n");
+        for (String line : lines) {
+            if (line.trim().endsWith(".ts")) {
+                tsFilePaths.add(line.trim());
+            }
+        }
+        return tsFilePaths;
+    }
+
+
+    private String replaceTsFilePathsWithSignedUrls(String m3u8Playlist, List<String> tsFilePaths, List<String> signedUrls) {
+        for (int i = 0; i < tsFilePaths.size(); i++) {
+            m3u8Playlist = m3u8Playlist.replace(tsFilePaths.get(i), signedUrls.get(i));
+        }
+        return m3u8Playlist;
+    }
+
+
+
+    public String getSignedMasterUrl(int videoId) {
+        String query = "SELECT link_1080p FROM movies WHERE id = ?";
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, videoId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                // Fetch the master.m3u8 path from the database
+                String masterPlaylistPath = rs.getString("link_1080p");
+
+                // Modify the master.m3u8 playlist with signed URLs for the .ts files
+                String modifiedPlaylist = modifyM3U8PlaylistWithSignedUrls(bucketName, masterPlaylistPath);
+
+
+                // Upload the modified playlist back to the cloud storage
+                uploadModifiedPlaylistToCloud(bucketName, modifiedPlaylist, masterPlaylistPath);
+
+                // Generate the signed URL for master.m3u8
+                //return storageService.generateSignedUrl(bucketName, masterPlaylistPath);
+                return generateSignedUrlForModifiedPlaylist(bucketName, masterPlaylistPath);
+            } else {
+                throw new RuntimeException("Video not found with ID: " + videoId);
+            }
+        } catch (SQLException | IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error fetching signed master URL");
+        }
+    }
+
+
 
     /**
      * To get all the videos from the database
@@ -41,7 +131,7 @@ public class VideoService {
     public List<Video> getAllVideos() {
         String query = "SELECT * FROM movies";
         List<Video> videos = new ArrayList<>();
-
+        System.out.println("get all videos");
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
@@ -77,6 +167,7 @@ public class VideoService {
      * To get video from the database by its ID
      */
     public Video getVideoById(int id) {
+        System.out.println("get a video");
         String query = "SELECT * FROM movies WHERE id = ?";
         try (Connection conn = DatabaseConfig.getConnection(); // Get connection from DatabaseConfig
              PreparedStatement stmt = conn.prepareStatement(query)) {
