@@ -17,23 +17,11 @@ public class VideoService {
     private final String bucketName = "bucket-movies-project";
 
 
-    private final String jsonCredentials = "{\n" +
-            "  \"type\": \"service_account\",\n" +
-            "  \"project_id\": \"projectnetflix-437314\",\n" +
-            "  \"private_key_id\": \"dc2e07604bcd56684662b76dcd98d011824d8b19\",\n" +
-            "  \"private_key\": \"-----BEGIN PRIVATE KEY-----\\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQCpf6jpxGKJGds+\\nFvf5M3sGvIiPU2D8HfeGZPYXE9OOU7Vdqc8gEeMZqEt7FYTM1ltn+RGFUmTOFynX\\njon+scUqrv/rMejuwMP96hLkbmScDsF+EDsiKcdhb4p0mW/OnjBy0OkhQ2C1Ha7l\\npbINy2tReY06CZ7IcWrGUsnhKewHpxAy5JBrS5pQP/9zHUWQhbafg7+xvjGljF4n\\nZjNTRCh3yh5wAh64zI6J0ldG63Q8o2NzKVpbZp/UuoATOzl2zQGAwejH9IHhaiVA\\n/uwqi7q3peaS1+RukLi5T128lMWNGWJhceH8+DfQIR13QwJRjyBwpCwTimfIAx1L\\nTj1iX/SlAgMBAAECggEAC4H81F4+eGN2hKknjdZGcIclWGHHUGaycv/wy1FPyDZ7\\ntk+8ncdJHWlVMpab7RJSo2UAIQaejHV7JETrroygP80g1/WMBIW26MrXHIY4M3Y3\\nAdmVQjUG8eESS+dM9YC89lajtVvvOWy5/qJ4y8H3V9FCWuHjU2WL48okJbLkcQJ0\\npLEoAb0E94zUvV8ktFyZzi8S/G2rSbB408zReOMlCIU/Wa/74jKAZ/OGbw5SNSqU\\n41EduCC/EV7AriEUudKhn6JuiYnELjdhdee1PxvTgB6eHmRkJ0UhmEHuk2zeftyG\\nJyq6MEsKVx770icPddvs6LPU3V6T6xAlnVNf4G+esQKBgQC1rxqKOXzerXhKmyXy\\nLECf5R1EuBl3UtWcajNFBGVZjVaCY5/ujZhoRgarpwyDCcXrmMLi5+0l709vCL6M\\nvJ9zdho22d2LdHaGWZQk9GP+wmgk98ufb0WsdqUzjddFSh6ajgHZOLZdMi7rY0DB\\n08lY03B3cM4NhRxKBt3CHD/hLQKBgQDu1JRGhjWQbGSOxdl1/5h5uo0ThyQKEvq7\\nn+8rFN5o+95QmHYBNcvyzYmKgjnU5HUnp+J68lcWhvxPRXlCfsgf4F0ti3U/yHxQ\\nCVLzPGwblWHCWmDmdWyKcKl74839PgByZ6dN82TFD52fh6Gduw2uuRenVWmhTvOP\\nFykKbkjcWQKBgQCHI16/T7FkxG0EOVDJSEctZ7MUiUdP7Qo8VPYbsQBd0vZ09/te\\n6m1hqiyOAywYT+2qpy7WriJEJDPWaA+sCSUlMcSf5f+XGiKLHhhGQI4cUag7TyFj\\nTtXpSTrqFOf5fv8ygMw5Majbu1cQ+PuS8KAEdQljnkF15vu6yE6scmzFZQKBgQDW\\n4mG+yoZrOXuIki9E4gH4lIbWaSNeBRGfuxjf9FjgsK2oamTSVer4vUHhY6ZRDHT0\\nhzNZV65P0Ig3ctTVpWi+dYqgrfeCugpPoPQHcff7IX7h9Zt1/3T3YsK7e44dKqoQ\\nRX7cvf+O5qv1m30og+KdsF+96TWvM3Ak8Lu2bOAVkQKBgQCogEy0WWqjDZxmT3vq\\n1X/EPVU1P0U9D8K0aYmvo0z8zOeSCVWe1WoaxjkO4MVCwjAFNJKNI0OQYTNCfUvc\\n5MDraUZliH0GSioqlVWmLlda5/HVUQFBH51UpUrgXikI1PaVjuEgykyRDT6vH+dR\\nWrCsDTo1IIprrNlXUnFOGvB4EA==\\n-----END PRIVATE KEY-----\\n\",\n" +
-            "  \"client_email\": \"291715051648-compute@developer.gserviceaccount.com\",\n" +
-            "  \"client_id\": \"105685468130156421485\",\n" +
-            "  \"auth_uri\": \"https://accounts.google.com/o/oauth2/auth\",\n" +
-            "  \"token_uri\": \"https://oauth2.googleapis.com/token\",\n" +
-            "  \"auth_provider_x509_cert_url\": \"https://www.googleapis.com/oauth2/v1/certs\",\n" +
-            "  \"client_x509_cert_url\": \"https://www.googleapis.com/robot/v1/metadata/x509/291715051648-compute%40developer.gserviceaccount.com\",\n" +
-            "  \"universe_domain\": \"googleapis.com\"\n" +
-            "}\n";
+
 
     public VideoService() throws IOException {
         System.out.println("initialize video service");
-        this.storageService = new GoogleCloudStorageService(jsonCredentials);
+        this.storageService = new GoogleCloudStorageService();
     }
 
 
@@ -51,7 +39,7 @@ public class VideoService {
 
         // Generate signed URLs for each .ts file
         List<String> signedUrls = new ArrayList<>();
-        String pathPrefix = m3u8FilePath.replace("stream_1.m3u8", ""); // dealing with this only, change later
+        String pathPrefix = m3u8FilePath.replace("1080p.m3u8", ""); // dealing with this only, change later
         for (String tsFilePath : tsFilePaths) {
             String signedUrl = storageService.generateSignedUrl(bucketName, pathPrefix + tsFilePath);
             signedUrls.add(signedUrl);
@@ -75,13 +63,27 @@ public class VideoService {
     private List<String> extractTsFilePathsFromPlaylist(String m3u8Playlist) {
         List<String> tsFilePaths = new ArrayList<>();
         String[] lines = m3u8Playlist.split("\n");
+
         for (String line : lines) {
-            if (line.trim().endsWith(".ts")) {
-                tsFilePaths.add(line.trim());
+            if (line.endsWith(".ts")) {
+                // Caso seja apenas o caminho simples, ex: 1080p_000.ts
+                tsFilePaths.add(line);
+            } else if (line.startsWith("http")) {
+                // Caso seja um URL completo com parâmetros
+                String tsFileName = line.substring(line.lastIndexOf("/") + 1); // Extraia o nome
+                if (tsFileName.contains("?")) {
+                    // Remova parâmetros (tudo após '?')
+                    tsFileName = tsFileName.substring(0, tsFileName.indexOf("?"));
+                }
+                tsFilePaths.add(tsFileName); // Adicione o nome do arquivo .ts
             }
         }
+
         return tsFilePaths;
     }
+
+
+
 
 
     private String replaceTsFilePathsWithSignedUrls(String m3u8Playlist, List<String> tsFilePaths, List<String> signedUrls) {
